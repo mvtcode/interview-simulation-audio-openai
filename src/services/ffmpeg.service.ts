@@ -1,36 +1,51 @@
 import ffmpeg from 'fluent-ffmpeg';
-import { AudioFile } from '../interfaces';
-import { writeFileSync, existsSync, unlinkSync } from 'fs';
-import { logger } from '../utils/logger';
+import { join } from 'path';
+import { unlinkSync, writeFileSync } from 'fs';
 
 export class FFmpegService {
-  async mergeAudioFiles(audioFiles: AudioFile[], outputPath: string): Promise<void> {
+  public async mergeAudioFiles(
+    audioFiles: Array<{ path: string; content: string }>,
+    outputPath: string
+  ): Promise<void> {
     return new Promise((resolve, reject) => {
+      if (audioFiles.length === 0) {
+        reject(new Error('No audio files to merge'));
+        return;
+      }
+
+      // Tạo file danh sách
+      const listFilePath = join(process.cwd(), 'temp', 'list.txt');
+      const fileContent = audioFiles.map(file => `file '${file.path}'`).join('\n');
+      writeFileSync(listFilePath, fileContent);
+
       const command = ffmpeg();
 
-      const fileList = audioFiles.map(file => `file '${file.path}'`).join('\n');
-      const listFile = 'files.txt';
-
-      writeFileSync(listFile, fileList);
-
+      // Sử dụng concat demuxer
       command
-        .input(listFile)
+        .input(listFilePath)
         .inputOptions(['-f', 'concat', '-safe', '0'])
         .outputOptions('-c copy')
-        .output(outputPath)
         .on('end', () => {
-          logger.info('Audio files merged successfully');
-          unlinkSync(listFile);
+          // Xóa các file tạm
+          try {
+            unlinkSync(listFilePath);
+            audioFiles.forEach(file => {
+              try {
+                unlinkSync(file.path);
+              } catch (error) {
+                console.error(`Error deleting temporary file ${file.path}:`, error);
+              }
+            });
+          } catch (error) {
+            console.error(`Error deleting list file:`, error);
+          }
           resolve();
         })
-        .on('error', (err: Error) => {
-          logger.error('Error merging audio files:', err);
-          if (existsSync(listFile)) {
-            unlinkSync(listFile);
-          }
+        .on('error', err => {
+          console.error('Error merging audio files:', err);
           reject(err);
         })
-        .run();
+        .save(outputPath);
     });
   }
 }

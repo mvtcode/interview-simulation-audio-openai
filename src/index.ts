@@ -1,100 +1,39 @@
-import { config } from 'dotenv';
-import { join } from 'path';
-import { readFileSync, writeFileSync, existsSync, mkdirSync, unlinkSync } from 'fs';
-import { OpenAIService } from './services/openai.service';
-import { FFmpegService } from './services/ffmpeg.service';
-import { Conversation, AudioFile } from './interfaces';
-import { SpeakerType, VoiceType } from './enums';
-import { OUTPUT_DIR, FINAL_AUDIO_FILE, SPEAKER_LABELS } from './constants';
-import { logger } from './utils/logger';
+require('dotenv').config(); // không sửa lại
+import express from 'express';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+import path from 'path';
+import { interviewRoutes } from './routes/interview.routes';
 
-config();
-
-const outputDir = join(__dirname, '..', OUTPUT_DIR);
-if (!existsSync(outputDir)) {
-  mkdirSync(outputDir);
+// Check required environment variables
+if (!process.env.OPENAI_API_KEY) {
+  console.error('Error: OPENAI_API_KEY is not set in environment variables');
+  process.exit(1);
 }
 
-function parseConversation(markdown: string): Conversation[] {
-  const conversations: Conversation[] = [];
-  const lines = markdown.split('\n');
-  let currentSpeaker: SpeakerType | null = null;
-  let currentContent = '';
+const app = express();
+const port = process.env.PORT || 3000;
 
-  for (const line of lines) {
-    if (line.includes(`**${SPEAKER_LABELS[SpeakerType.INTERVIEWER]}:**`)) {
-      if (currentSpeaker && currentContent) {
-        conversations.push({
-          speaker: currentSpeaker,
-          content: currentContent.trim(),
-        });
-      }
-      currentSpeaker = SpeakerType.INTERVIEWER;
-      currentContent = line.replace(`**${SPEAKER_LABELS[SpeakerType.INTERVIEWER]}:**`, '').trim();
-    } else if (line.includes(`**${SPEAKER_LABELS[SpeakerType.CANDIDATE]}:**`)) {
-      if (currentSpeaker && currentContent) {
-        conversations.push({
-          speaker: currentSpeaker,
-          content: currentContent.trim(),
-        });
-      }
-      currentSpeaker = SpeakerType.CANDIDATE;
-      currentContent = line.replace(`**${SPEAKER_LABELS[SpeakerType.CANDIDATE]}:**`, '').trim();
-    } else if (currentSpeaker && line.trim()) {
-      currentContent += ' ' + line.trim();
-    }
-  }
+// Middleware
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, '../public')));
 
-  if (currentSpeaker && currentContent) {
-    conversations.push({
-      speaker: currentSpeaker,
-      content: currentContent.trim(),
-    });
-  }
+// Routes
+app.use('/api/interviews', interviewRoutes);
 
-  return conversations;
-}
+// Serve HTML files
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/index.html'));
+});
 
-async function main(): Promise<void> {
-  try {
-    const openaiService = new OpenAIService(process.env.OPENAI_API_KEY || '');
-    const ffmpegService = new FFmpegService();
+// Error handling middleware
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Something went wrong!' });
+});
 
-    const markdownContent = readFileSync('conversation.md', 'utf8');
-    const conversations = parseConversation(markdownContent);
-    logger.info(`Found ${conversations.length} conversations`);
-
-    const audioFiles: AudioFile[] = [];
-
-    for (let i = 0; i < conversations.length; i++) {
-      const { speaker, content } = conversations[i];
-      logger.info(`\nGenerating audio for ${speaker} (${i + 1}/${conversations.length})`);
-      logger.info(`Content: "${content.substring(0, 50)}..."`);
-
-      const audioBuffer = await openaiService.generateAudio(
-        content,
-        speaker === SpeakerType.INTERVIEWER ? VoiceType.INTERVIEWER : VoiceType.CANDIDATE
-      );
-
-      const audioPath = join(outputDir, `audio_${i}.mp3`);
-      writeFileSync(audioPath, audioBuffer);
-      logger.info(`Audio saved to: ${audioPath}`);
-      audioFiles.push({ path: audioPath, index: i });
-    }
-
-    logger.info('\nAll audio files generated. Starting merge process...');
-    const finalOutputPath = join(outputDir, FINAL_AUDIO_FILE);
-    await ffmpegService.mergeAudioFiles(audioFiles, finalOutputPath);
-
-    logger.info('Process completed successfully!');
-    logger.info(`Final audio file saved at: ${finalOutputPath}`);
-
-    audioFiles.forEach(file => {
-      unlinkSync(file.path);
-    });
-  } catch (error) {
-    logger.error('Error in main process:', error);
-  }
-}
-
-main();
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});

@@ -1,28 +1,29 @@
-# Interview Simulation Audio Generator
+# Mô phỏng phỏng vấn với OpenAI
 
-Một ứng dụng Node.js sử dụng OpenAI API để tạo audio từ cuộc phỏng vấn được viết dưới dạng markdown.
+Ứng dụng mô phỏng cuộc phỏng vấn sử dụng OpenAI API để tạo JD, CV, cuộc hội thoại và audio.
 
 ## Tính năng
 
-- Đọc và phân tích file markdown chứa nội dung cuộc phỏng vấn
-- Tạo audio cho từng phần hội thoại sử dụng OpenAI Text-to-Speech API
-- Sử dụng giọng nói khác nhau cho người phỏng vấn và ứng viên
-- Tự động ghép các file audio thành một file hoàn chỉnh
-- Hỗ trợ TypeScript với cấu trúc code rõ ràng
-- Tích hợp ESLint và Prettier để đảm bảo code chất lượng
+- Tạo JD dựa trên thông tin vị trí tuyển dụng
+- Tạo CV dựa trên thông tin ứng viên
+- Tạo cuộc hội thoại phỏng vấn tự nhiên
+- Tạo audio cho cuộc hội thoại với giọng nam/nữ
+- Lưu trữ thông tin vào SQLite database
+- Xuất PDF cho CV và JD
+- Giao diện web thân thiện với người dùng
 
-## Yêu cầu hệ thống
+## Yêu cầu
 
-- Node.js >= 16.x
-- npm >= 7.x
-- FFmpeg (đã được cài đặt sẵn trong project)
+- Node.js >= 16
+- npm hoặc yarn
+- OpenAI API Key
 
 ## Cài đặt
 
 1. Clone repository:
 ```bash
-git clone git@github.com:mvtcode/interview-simulation-audio-openai.git
-cd interview-simulation-audio-openai
+git clone https://github.com/your-username/interview-simulation.git
+cd interview-simulation
 ```
 
 2. Cài đặt dependencies:
@@ -30,65 +31,52 @@ cd interview-simulation-audio-openai
 npm install
 ```
 
-3. Tạo file `.env` từ `.env.example` và thêm API key của OpenAI:
+3. Tạo file .env từ .env.example:
 ```bash
 cp .env.example .env
-# Mở file .env và thêm OPENAI_API_KEY của bạn
 ```
 
-## Sử dụng
+4. Cập nhật OPENAI_API_KEY trong file .env
 
-1. Chuẩn bị file markdown:
-- Tạo file `conversation.md` trong thư mục gốc
-- Viết nội dung phỏng vấn theo định dạng:
-```markdown
-**Người phỏng vấn:** [Nội dung câu hỏi]
+## Chạy ứng dụng
 
-**Ứng viên:** [Nội dung trả lời]
-```
-
-2. Chạy ứng dụng:
+1. Chạy ở chế độ development:
 ```bash
-# Chế độ development (tự động reload khi code thay đổi)
 npm run dev
+```
 
-# Chế độ production
+2. Chạy ở chế độ production:
+```bash
+npm run build
 npm start
 ```
 
-3. Kết quả:
-- Audio sẽ được tạo trong thư mục `output/`
-- File cuối cùng sẽ có tên `final_conversation.mp3`
+3. Truy cập ứng dụng tại: http://localhost:3000
 
-## Cấu trúc thư mục
+## Cấu trúc dự án
 
 ```
 src/
-  ├── interfaces/    # Định nghĩa interfaces
-  ├── enums/         # Định nghĩa enums
-  ├── constants/     # Các hằng số
-  ├── services/      # Các service xử lý logic
-  ├── utils/         # Các utility functions
-  └── index.ts       # File chính
+  ├── controllers/     # Xử lý request từ client
+  ├── models/          # Định nghĩa data models
+  ├── routes/          # Định nghĩa API routes
+  ├── services/        # Business logic
+  └── index.ts         # Entry point
+public/
+  ├── css/            # CSS files
+  ├── js/             # JavaScript files
+  ├── audio/          # Audio files
+  └── index.html      # Main HTML file
 ```
 
-## Scripts
+## API Endpoints
 
-- `npm start`: Chạy ứng dụng
-- `npm run dev`: Chạy ứng dụng ở chế độ development
-- `npm run build`: Build TypeScript sang JavaScript
-- `npm run lint`: Kiểm tra lỗi code
-- `npm run lint:fix`: Tự động sửa lỗi code
-- `npm run format`: Format code theo chuẩn Prettier
-- `npm run check`: Kiểm tra cả lint và format
+- POST /api/interviews - Tạo mô phỏng phỏng vấn mới
+- GET /api/interviews - Lấy danh sách mô phỏng (có filter)
+- GET /api/interviews/:id - Lấy chi tiết mô phỏng
+- GET /api/interviews/:id/pdf - Tải PDF của mô phỏng
+- GET /api/interviews/:id/audio - Tải audio của mô phỏng
 
-## Thông tin tác giả
+## License
 
-- **Tên:** Mạc Văn Tân
-- **Email:** macvantan@gmail.com
-- **Telegram:** tanmac
-- **Skype:** trai_12a1
-
-## Giấy phép
-
-ISC 
+MIT 
