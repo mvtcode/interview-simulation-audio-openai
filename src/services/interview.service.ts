@@ -55,13 +55,13 @@ export class InterviewService {
       interviewEventEmitter.emit('progress', {
         step: 'jd',
         status: 'start',
-        message: 'Đang tạo mô tả công việc...',
+        message: 'Đang tạo JD...',
       });
       const jd = await this.openaiService.generateJD(data.position);
       interviewEventEmitter.emit('progress', {
         step: 'jd',
         status: 'done',
-        message: 'Đã tạo xong mô tả công việc',
+        message: 'Đã tạo xong JD',
       });
 
       // Generate CV
