@@ -284,4 +284,27 @@ export class InterviewService {
       throw new Error('Failed to get interviews with filters');
     }
   }
+
+  public async generateRequiredExperience(position: {
+    title: string;
+    requiredLevel: string;
+    requiredExperienceYears: number;
+  }): Promise<string> {
+    try {
+      const prompt = `Tạo yêu cầu kinh nghiệm cho vị trí ${position.title} với level ${position.requiredLevel} và yêu cầu ${position.requiredExperienceYears} năm kinh nghiệm.
+      Mỗi yêu cầu phải ngắn gọn, rõ ràng và bắt đầu bằng dấu gạch đầu dòng.
+      Các yêu cầu phải bao gồm:
+      - Kỹ năng chuyên môn cần thiết
+      - Kiến thức về công nghệ/tools
+      - Kinh nghiệm thực tế
+      - Khả năng làm việc nhóm và giao tiếp
+      - Khả năng giải quyết vấn đề`;
+
+      const result = await this.openaiService.generateText(prompt);
+      return result;
+    } catch (error) {
+      console.error('Error generating required experience:', error);
+      throw error;
+    }
+  }
 }

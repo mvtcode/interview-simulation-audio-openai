@@ -226,6 +226,49 @@ $(document).ready(function() {
             currentItem[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     });
+
+    // Xử lý sự kiện nút Gen bằng AI
+    $('#copyRequiredExperience').click(function() {
+        const positionTitle = $('#positionTitle').val();
+        const positionLevel = $('#positionLevel').val();
+        const positionExperience = $('#positionExperience').val();
+
+        if (!positionTitle || !positionLevel || !positionExperience) {
+            alert('Vui lòng điền đầy đủ thông tin vị trí tuyển dụng');
+            return;
+        }
+
+        overlay.show();
+        progressContainer.show();
+        progressList.empty();
+        progressList.append($('<li>').text('Đang tạo yêu cầu kinh nghiệm...'));
+
+        $.ajax({
+            url: '/api/interviews/generate-required-experience',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                positionTitle,
+                positionLevel,
+                positionExperience
+            }),
+            success: function(response) {
+                $('#positionRequiredExperience').val(response.requiredExperience);
+                progressList.find('li').text('Đã tạo xong yêu cầu kinh nghiệm!');
+                setTimeout(() => {
+                    overlay.hide();
+                    progressContainer.hide();
+                }, 1000);
+            },
+            error: function(xhr) {
+                progressList.find('li').text('Có lỗi xảy ra: ' + (xhr.responseJSON?.error || 'Lỗi không xác định'));
+                setTimeout(() => {
+                    overlay.hide();
+                    progressContainer.hide();
+                }, 2000);
+            }
+        });
+    });
 });
 
 function loadInterviews() {

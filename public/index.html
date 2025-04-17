@@ -1,216 +1,342 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mô phỏng phỏng vấn</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-</head>
-<body>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link href="css/style.css" rel="stylesheet" />
+  </head>
+  <body>
     <div class="container mt-4">
-        <h1 class="text-center mb-4">Mô phỏng phỏng vấn</h1>
+      <h1 class="text-center mb-4">Mô phỏng phỏng vấn</h1>
 
-        <div class="row">
-            <!-- Form thông tin ứng viên -->
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">Thông tin ứng viên</h5>
-                    </div>
-                    <div class="card-body">
-                        <form id="interviewForm">
-                            <div class="mb-3">
-                                <label class="form-label" for="candidateName">Họ tên</label>
-                                <input type="text" class="form-control" id="candidateName" name="candidate.name" value="Nguyễn Văn A" required aria-label="Họ tên ứng viên">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label" for="candidatePhone">Số điện thoại</label>
-                                <input type="tel" class="form-control" id="candidatePhone" name="candidate.phone" value="0987654321" required aria-label="Số điện thoại ứng viên">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label" for="candidateEmail">Email</label>
-                                <input type="email" class="form-control" id="candidateEmail" name="candidate.email" value="nguyenvana@gmail.com" required aria-label="Email ứng viên">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label" for="candidateLevel">Level</label>
-                                <select class="form-select" id="candidateLevel" name="candidate.level" required aria-label="Level ứng viên">
-                                    <option value="junior">Junior</option>
-                                    <option value="mid">Mid-level</option>
-                                    <option value="senior" selected>Senior</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label" for="candidateExperience">Số năm kinh nghiệm</label>
-                                <select class="form-select" id="candidateExperience" name="candidate.experienceYears" required aria-label="Số năm kinh nghiệm ứng viên">
-                                    <option value="1">1 năm</option>
-                                    <option value="2">2 năm</option>
-                                    <option value="3">3 năm</option>
-                                    <option value="4">4 năm</option>
-                                    <option value="5" selected>5 năm</option>
-                                    <option value="6">6 năm</option>
-                                    <option value="7">7 năm</option>
-                                    <option value="8">8 năm</option>
-                                    <option value="9">9 năm</option>
-                                    <option value="10">10+ năm</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label" for="candidateGender">Giới tính</label>
-                                <select class="form-select" id="candidateGender" name="candidate.gender" required aria-label="Giới tính ứng viên">
-                                    <option value="male" selected>Nam</option>
-                                    <option value="female">Nữ</option>
-                                </select>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Form thông tin vị trí -->
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">Thông tin vị trí ứng tuyển</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <label class="form-label" for="positionTitle">Vị trí tuyển dụng</label>
-                            <select class="form-select" id="positionTitle" name="position.title" required aria-label="Vị trí tuyển dụng">
-                                <option value="java">Java Developer</option>
-                                <option value="nodejs" selected>Node.js Developer</option>
-                                <option value="vuejs">Vue.js Developer</option>
-                                <option value="business">Kinh doanh</option>
-                                <option value="marketing">Marketing</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="positionLevel">Yêu cầu level</label>
-                            <select class="form-select" id="positionLevel" name="position.requiredLevel" required aria-label="Yêu cầu level">
-                                <option value="junior">Junior</option>
-                                <option value="mid">Mid-level</option>
-                                <option value="senior" selected>Senior</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="positionExperience">Yêu cầu số năm kinh nghiệm</label>
-                            <select class="form-select" id="positionExperience" name="position.requiredExperienceYears" required aria-label="Yêu cầu số năm kinh nghiệm">
-                                <option value="1">1 năm</option>
-                                <option value="2">2 năm</option>
-                                <option value="3">3 năm</option>
-                                <option value="4">4 năm</option>
-                                <option value="5" selected>5 năm</option>
-                                <option value="6">6 năm</option>
-                                <option value="7">7 năm</option>
-                                <option value="8">8 năm</option>
-                                <option value="9">9 năm</option>
-                                <option value="10">10+ năm</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="positionRequiredExperience">Yêu cầu kinh nghiệm</label>
-                            <textarea class="form-control" id="positionRequiredExperience" name="position.requiredExperience" rows="8" required aria-label="Yêu cầu kinh nghiệm">- Có kinh nghiệm với Node.js và TypeScript
-- Có kinh nghiệm với REST API
-- Có kinh nghiệm với cơ sở dữ liệu SQL và NoSQL
-- Có kinh nghiệm làm hệ thống lớn, đòi hỏi performance cao, CCU lớn
-- Có kinh nghiệm với Docker và Kubernetes là một lợi thế</textarea>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Form thông tin người phỏng vấn -->
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">Thông tin người phỏng vấn</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <label class="form-label" for="interviewerName">Họ tên</label>
-                            <input type="text" class="form-control" id="interviewerName" name="interviewer.name" value="Trần Văn B" required aria-label="Họ tên người phỏng vấn">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="interviewerPosition">Chức vụ</label>
-                            <input type="text" class="form-control" id="interviewerPosition" name="interviewer.position" value="Technical Leader" required aria-label="Chức vụ người phỏng vấn">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="interviewerGender">Giới tính</label>
-                            <select class="form-select" id="interviewerGender" name="interviewer.gender" required aria-label="Giới tính người phỏng vấn">
-                                <option value="male" selected>Nam</option>
-                                <option value="female">Nữ</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="text-center mb-4">
-            <button type="button" class="btn btn-primary" id="generateBtn" title="Tạo mô phỏng phỏng vấn" aria-label="Tạo mô phỏng phỏng vấn">Tạo mô phỏng</button>
-        </div>
-
-        <!-- Bảng hiển thị kết quả -->
-        <div class="card">
+      <div class="row">
+        <!-- Form thông tin ứng viên -->
+        <div class="col-md-4">
+          <div class="card mb-4">
             <div class="card-header">
-                <h5 class="mb-0">Danh sách mô phỏng</h5>
+              <h5 class="mb-0">Thông tin ứng viên</h5>
             </div>
             <div class="card-body">
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <input type="text" class="form-control" id="candidateNameFilter" placeholder="Tìm theo tên ứng viên">
-                    </div>
-                    <div class="col-md-4">
-                        <input type="text" class="form-control" id="candidatePhoneFilter" placeholder="Tìm theo số điện thoại">
-                    </div>
-                    <div class="col-md-4">
-                        <input type="text" class="form-control" id="interviewerNameFilter" placeholder="Tìm theo tên người phỏng vấn">
-                    </div>
+              <form id="interviewForm">
+                <div class="mb-3">
+                  <label class="form-label" for="candidateName">Họ tên</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="candidateName"
+                    name="candidate.name"
+                    value="Nguyễn Văn A"
+                    required
+                    aria-label="Họ tên ứng viên"
+                  />
                 </div>
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Tên ứng viên</th>
-                                <th>Số điện thoại</th>
-                                <th>Vị trí</th>
-                                <th>Người phỏng vấn</th>
-                                <th>Ngày tạo</th>
-                                <th>Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody id="interviewTableBody">
-                        </tbody>
-                    </table>
+                <div class="mb-3">
+                  <label class="form-label" for="candidatePhone">Số điện thoại</label>
+                  <input
+                    type="tel"
+                    class="form-control"
+                    id="candidatePhone"
+                    name="candidate.phone"
+                    value="0987654321"
+                    required
+                    aria-label="Số điện thoại ứng viên"
+                  />
                 </div>
+                <div class="mb-3">
+                  <label class="form-label" for="candidateEmail">Email</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="candidateEmail"
+                    name="candidate.email"
+                    value="nguyenvana@gmail.com"
+                    required
+                    aria-label="Email ứng viên"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label" for="candidateLevel">Level</label>
+                  <select
+                    class="form-select"
+                    id="candidateLevel"
+                    name="candidate.level"
+                    required
+                    aria-label="Level ứng viên"
+                  >
+                    <option value="junior">Junior</option>
+                    <option value="mid">Mid-level</option>
+                    <option value="senior" selected>Senior</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label" for="candidateExperience">Số năm kinh nghiệm</label>
+                  <select
+                    class="form-select"
+                    id="candidateExperience"
+                    name="candidate.experienceYears"
+                    required
+                    aria-label="Số năm kinh nghiệm ứng viên"
+                  >
+                    <option value="1">1 năm</option>
+                    <option value="2">2 năm</option>
+                    <option value="3">3 năm</option>
+                    <option value="4">4 năm</option>
+                    <option value="5" selected>5 năm</option>
+                    <option value="6">6 năm</option>
+                    <option value="7">7 năm</option>
+                    <option value="8">8 năm</option>
+                    <option value="9">9 năm</option>
+                    <option value="10">10+ năm</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label" for="candidateGender">Giới tính</label>
+                  <select
+                    class="form-select"
+                    id="candidateGender"
+                    name="candidate.gender"
+                    required
+                    aria-label="Giới tính ứng viên"
+                  >
+                    <option value="male" selected>Nam</option>
+                    <option value="female">Nữ</option>
+                  </select>
+                </div>
+              </form>
             </div>
+          </div>
         </div>
+
+        <!-- Form thông tin vị trí -->
+        <div class="col-md-4">
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">Thông tin vị trí ứng tuyển</h5>
+            </div>
+            <div class="card-body">
+              <div class="mb-3">
+                <label class="form-label" for="positionTitle">Vị trí tuyển dụng</label>
+                <select
+                  class="form-select"
+                  id="positionTitle"
+                  name="position.title"
+                  required
+                  aria-label="Vị trí tuyển dụng"
+                >
+                  <option value="java">Java Developer</option>
+                  <option value="nodejs" selected>Node.js Developer</option>
+                  <option value="vuejs">Vue.js Developer</option>
+                  <option value="business">Kinh doanh</option>
+                  <option value="marketing">Marketing</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="positionLevel">Yêu cầu level</label>
+                <select
+                  class="form-select"
+                  id="positionLevel"
+                  name="position.requiredLevel"
+                  required
+                  aria-label="Yêu cầu level"
+                >
+                  <option value="junior">Junior</option>
+                  <option value="mid">Mid-level</option>
+                  <option value="senior" selected>Senior</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="positionExperience"
+                  >Yêu cầu số năm kinh nghiệm</label
+                >
+                <select
+                  class="form-select"
+                  id="positionExperience"
+                  name="position.requiredExperienceYears"
+                  required
+                  aria-label="Yêu cầu số năm kinh nghiệm"
+                >
+                  <option value="1">1 năm</option>
+                  <option value="2">2 năm</option>
+                  <option value="3">3 năm</option>
+                  <option value="4">4 năm</option>
+                  <option value="5" selected>5 năm</option>
+                  <option value="6">6 năm</option>
+                  <option value="7">7 năm</option>
+                  <option value="8">8 năm</option>
+                  <option value="9">9 năm</option>
+                  <option value="10">10+ năm</option>
+                </select>
+              </div>
+              <div class="mb-2">
+                <div class="d-flex justify-content-between mb-2">
+                  <label class="form-label" for="positionRequiredExperience"
+                    >Yêu cầu kinh nghiệm</label
+                  >
+                  <!-- Button gen AI, dựa vào thông tin vị trí ứng tuyển để gen ra yêu cầu kinh nghiệm (Call qua backend) -->
+                  <button
+                    class="btn btn-outline-primary btn-sm"
+                    type="button"
+                    id="copyRequiredExperience"
+                  >
+                    Gen bằng AI
+                  </button>
+                </div>
+                <textarea
+                  class="form-control"
+                  id="positionRequiredExperience"
+                  name="position.requiredExperience"
+                  rows="8"
+                  required
+                  aria-label="Yêu cầu kinh nghiệm"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form thông tin người phỏng vấn -->
+        <div class="col-md-4">
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">Thông tin người phỏng vấn</h5>
+            </div>
+            <div class="card-body">
+              <div class="mb-3">
+                <label class="form-label" for="interviewerName">Họ tên</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="interviewerName"
+                  name="interviewer.name"
+                  value="Trần Văn B"
+                  required
+                  aria-label="Họ tên người phỏng vấn"
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="interviewerPosition">Chức vụ</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="interviewerPosition"
+                  name="interviewer.position"
+                  value="Technical Leader"
+                  required
+                  aria-label="Chức vụ người phỏng vấn"
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="interviewerGender">Giới tính</label>
+                <select
+                  class="form-select"
+                  id="interviewerGender"
+                  name="interviewer.gender"
+                  required
+                  aria-label="Giới tính người phỏng vấn"
+                >
+                  <option value="male" selected>Nam</option>
+                  <option value="female">Nữ</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mb-4">
+        <button
+          type="button"
+          class="btn btn-primary"
+          id="generateBtn"
+          title="Tạo mô phỏng phỏng vấn"
+          aria-label="Tạo mô phỏng phỏng vấn"
+        >
+          Tạo mô phỏng
+        </button>
+      </div>
+
+      <!-- Bảng hiển thị kết quả -->
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Danh sách mô phỏng</h5>
+        </div>
+        <div class="card-body">
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <input
+                type="text"
+                class="form-control"
+                id="candidateNameFilter"
+                placeholder="Tìm theo tên ứng viên"
+              />
+            </div>
+            <div class="col-md-4">
+              <input
+                type="text"
+                class="form-control"
+                id="candidatePhoneFilter"
+                placeholder="Tìm theo số điện thoại"
+              />
+            </div>
+            <div class="col-md-4">
+              <input
+                type="text"
+                class="form-control"
+                id="interviewerNameFilter"
+                placeholder="Tìm theo tên người phỏng vấn"
+              />
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Tên ứng viên</th>
+                  <th>Số điện thoại</th>
+                  <th>Vị trí</th>
+                  <th>Người phỏng vấn</th>
+                  <th>Ngày tạo</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="interviewTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Modal hiển thị cuộc hội thoại -->
     <div class="modal fade" id="conversationModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Cuộc phỏng vấn</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <audio id="conversationAudio" controls class="w-100"></audio>
-                    </div>
-                    <div id="conversationContent" class="conversation-content">
-                    </div>
-                </div>
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Cuộc phỏng vấn</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <audio id="conversationAudio" controls class="w-100"></audio>
             </div>
+            <div id="conversationContent" class="conversation-content"></div>
+          </div>
         </div>
+      </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="js/app.js"></script>
-</body>
+    <script src="/js/script.js"></script>
+  </body>
 </html>

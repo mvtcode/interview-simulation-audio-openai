@@ -139,4 +139,26 @@ export class InterviewController {
       res.status(500).json({ error: 'Failed to generate JD PDF' });
     }
   };
+
+  public generateRequiredExperience = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { positionTitle, positionLevel, positionExperience } = req.body;
+
+      if (!positionTitle || !positionLevel || !positionExperience) {
+        res.status(400).json({ error: 'Missing required fields: positionTitle, positionLevel, or positionExperience' });
+        return;
+      }
+
+      const result = await this.interviewService.generateRequiredExperience({
+        title: positionTitle,
+        requiredLevel: positionLevel,
+        requiredExperienceYears: positionExperience
+      });
+
+      res.json({ requiredExperience: result });
+    } catch (error) {
+      console.error('Error generating required experience:', error);
+      res.status(500).json({ error: error instanceof Error ? error.message : 'Failed to generate required experience' });
+    }
+  };
 }

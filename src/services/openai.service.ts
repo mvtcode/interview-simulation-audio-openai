@@ -332,4 +332,29 @@ Trả về kết quả dưới dạng JSON với định dạng:
       throw error;
     }
   }
+
+  public async generateText(prompt: string): Promise<string> {
+    try {
+      const completion = await this.openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'system',
+            content: 'Bạn là một chuyên gia tuyển dụng. Hãy tạo các yêu cầu kinh nghiệm ngắn gọn, mỗi yêu cầu là một gạch đầu dòng. Sử dụng ngôn ngữ tiếng Việt.'
+          },
+          {
+            role: 'user',
+            content: prompt
+          }
+        ],
+        temperature: 0.7,
+        max_tokens: 1000
+      });
+
+      return completion.choices[0].message.content || '';
+    } catch (error) {
+      console.error('Error generating text:', error);
+      throw error;
+    }
+  }
 }
