@@ -104,6 +104,79 @@ $(document).ready(function() {
         .text('Đóng')
         .appendTo(modalFooter);
 
+    // Định nghĩa danh sách giọng đọc OpenAI
+    const voices = {
+        male: [
+            { id: 'echo', name: 'Giọng nam trẻ' },
+            { id: 'onyx', name: 'Giọng nam trưởng thành' }
+        ],
+        female: [
+            { id: 'nova', name: 'Giọng nữ trưởng thành' },
+            { id: 'fable', name: 'Giọng nữ trẻ' },
+            { id: 'shimmer', name: 'Giọng nữ dịu dàng' }
+        ],
+        neutral: [
+            { id: 'alloy', name: 'Giọng trung tính' }
+        ]
+    };
+
+    // Cập nhật danh sách giọng đọc dựa trên giới tính
+    function updateVoiceOptions(genderSelect, voiceSelect) {
+        const gender = genderSelect.value;
+        let voiceOptions = [...voices[gender]];
+
+        // Thêm giọng trung tính vào danh sách
+        voiceOptions = [...voiceOptions, ...voices.neutral];
+
+        // Xóa tất cả options cũ
+        voiceSelect.innerHTML = '<option value="" disabled selected>Chọn giọng đọc</option>';
+
+        // Thêm options mới
+        voiceOptions.forEach(voice => {
+            const option = document.createElement('option');
+            option.value = voice.id;
+            option.textContent = voice.name;
+            voiceSelect.appendChild(option);
+        });
+    }
+
+    // Thêm event listeners cho giới tính
+    $('#candidateGender').on('change', function() {
+        updateVoiceOptions(this, document.getElementById('candidateVoice'));
+    });
+
+    $('#interviewerGender').on('change', function() {
+        updateVoiceOptions(this, document.getElementById('interviewerVoice'));
+    });
+
+    // Khởi tạo ban đầu
+    updateVoiceOptions(
+        document.getElementById('candidateGender'),
+        document.getElementById('candidateVoice')
+    );
+    updateVoiceOptions(
+        document.getElementById('interviewerGender'),
+        document.getElementById('interviewerVoice')
+    );
+
+    // Kiểm tra trước khi submit
+    $('#generateBtn').click(function(e) {
+        const candidateVoice = $('#candidateVoice').val();
+        const interviewerVoice = $('#interviewerVoice').val();
+
+        if (!candidateVoice || !interviewerVoice) {
+            e.preventDefault();
+            alert('Vui lòng chọn giọng đọc cho cả ứng viên và người phỏng vấn!');
+            return;
+        }
+
+        if (candidateVoice === interviewerVoice) {
+            e.preventDefault();
+            alert('Giọng đọc của ứng viên và người phỏng vấn không được trùng nhau!');
+            return;
+        }
+    });
+
     // Xử lý sự kiện tạo mô phỏng
     $('#generateBtn').click(function() {
         overlay.show(); // Hiển thị overlay

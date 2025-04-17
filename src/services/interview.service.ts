@@ -1,11 +1,10 @@
-import { Interview, DialogueLine } from '../models/interview.model';
+import { Interview } from '../models/interview.model';
 import { OpenAIService } from './openai.service';
 import { FFmpegService } from './ffmpeg.service';
 import { DatabaseService } from './database.service';
 import { PDFService } from './pdf.service';
-import { join } from 'path';
 import { EventEmitter } from 'events';
-import { ConversationLine } from './openai.service';
+import { join } from 'path';
 
 export const interviewEventEmitter = new EventEmitter();
 
@@ -30,10 +29,6 @@ export class InterviewService {
     this.ffmpegService = new FFmpegService();
     this.databaseService = new DatabaseService();
     this.pdfService = new PDFService();
-  }
-
-  private convertToDialogueLines(conversation: ConversationLine[]): DialogueLine[] {
-    return conversation;
   }
 
   public async createInterview(data: Partial<Interview>): Promise<Interview> {

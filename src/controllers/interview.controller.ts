@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { InterviewService, interviewEventEmitter } from '../services/interview.service';
-import { Interview } from '../models/interview.model';
 
 export class InterviewController {
   private interviewService: InterviewService;
@@ -40,7 +39,7 @@ export class InterviewController {
     }
   };
 
-  public subscribeToProgress = (req: Request, res: Response): void => {
+  public subscribeToProgress = (_req: Request, res: Response): void => {
     res.writeHead(200, {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
@@ -56,7 +55,7 @@ export class InterviewController {
     this.clients.add(res);
 
     // Xử lý khi client ngắt kết nối
-    req.on('close', () => {
+    _req.on('close', () => {
       clearInterval(heartbeat);
       this.clients.delete(res);
     });

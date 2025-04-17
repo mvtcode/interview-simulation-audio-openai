@@ -60,12 +60,14 @@ Hãy viết một cách chuyên nghiệp, rõ ràng và hấp dẫn.`;
 
   public async generateCV(candidate: Interview['candidate']): Promise<string> {
     const prompt = `Hãy tạo một CV chuyên nghiệp cho ứng viên ${candidate.name} với thông tin sau:
+- Email: ${candidate.email}
+- Số điện thoại: ${candidate.phone}
 - Cấp độ: ${candidate.level}
 - Số năm kinh nghiệm: ${candidate.experienceYears}
 - Giới tính: ${candidate.gender}
 
 CV cần bao gồm các phần:
-1. Thông tin cá nhân
+1. Thông tin cá nhân (bao gồm email và số điện thoại)
 2. Mục tiêu nghề nghiệp
 3. Kinh nghiệm làm việc (liệt kê ít nhất 3 công ty)
 4. Kỹ năng chuyên môn
