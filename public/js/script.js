@@ -107,16 +107,16 @@ $(document).ready(function() {
     // Định nghĩa danh sách giọng đọc OpenAI
     const voices = {
         male: [
-            { id: 'echo', name: 'Giọng nam trẻ' },
-            { id: 'onyx', name: 'Giọng nam trưởng thành' }
+            { id: 'echo', name: 'echo (giọng nam trẻ)' },
+            { id: 'onyx', name: 'onyx (giọng nam trưởng thành)' }
         ],
         female: [
-            { id: 'nova', name: 'Giọng nữ trưởng thành' },
-            { id: 'fable', name: 'Giọng nữ trẻ' },
-            { id: 'shimmer', name: 'Giọng nữ dịu dàng' }
+            { id: 'nova', name: 'nova (giọng nữ trưởng thành)' },
+            { id: 'fable', name: 'fable (giọng nữ trẻ)' },
+            { id: 'shimmer', name: 'shimmer (giọng nữ dịu dàng)' }
         ],
         neutral: [
-            { id: 'alloy', name: 'Giọng trung tính' }
+            { id: 'alloy', name: 'alloy (giọng trung tính)' }
         ]
     };
 
@@ -159,30 +159,125 @@ $(document).ready(function() {
         document.getElementById('interviewerVoice')
     );
 
-    // Kiểm tra trước khi submit
-    $('#generateBtn').click(function(e) {
-        const candidateVoice = $('#candidateVoice').val();
-        const interviewerVoice = $('#interviewerVoice').val();
-
-        if (!candidateVoice || !interviewerVoice) {
-            e.preventDefault();
-            alert('Vui lòng chọn giọng đọc cho cả ứng viên và người phỏng vấn!');
-            return;
-        }
-
-        if (candidateVoice === interviewerVoice) {
-            e.preventDefault();
-            alert('Giọng đọc của ứng viên và người phỏng vấn không được trùng nhau!');
-            return;
-        }
-    });
-
-    // Xử lý sự kiện tạo mô phỏng
-    $('#generateBtn').click(function() {
-        overlay.show(); // Hiển thị overlay
-        progressContainer.show();
-        progressList.empty();
-
+    // Khởi tạo validation cho form
+    const $form = $('#interviewForm');
+    $form.validate({
+        // Cấu hình hiển thị lỗi
+        errorElement: 'div',
+        errorPlacement: function(error, element) {
+            error.addClass('invalid-feedback');
+            error.insertAfter(element);
+        },
+        highlight: function(element, errorClass, validClass) {
+            $(element).addClass('is-invalid').removeClass('is-valid');
+        },
+        unhighlight: function(element, errorClass, validClass) {
+            $(element).removeClass('is-invalid').addClass('is-valid');
+        },
+        // Quy tắc validate
+        rules: {
+            // Thông tin ứng viên
+            'candidate.name': {
+                required: true,
+                minlength: 2
+            },
+            'candidate.email': {
+                required: true,
+                email: true
+            },
+            'candidate.phone': {
+                required: true,
+                pattern: /^[0-9]{10,11}$/
+            },
+            'candidate.level': 'required',
+            'candidate.experienceYears': {
+                required: true,
+                min: 0
+            },
+            'candidate.gender': 'required',
+            'candidate.voice': {
+                required: true,
+                differentVoice: true
+            },
+            // Thông tin vị trí
+            'position.title': 'required',
+            'position.level': 'required',
+            'position.experienceYears': {
+                required: true,
+                min: 0
+            },
+            'position.requiredExperience': {
+                required: true,
+                minlength: 10
+            },
+            // Thông tin người phỏng vấn
+            'interviewer.name': {
+                required: true,
+                minlength: 2
+            },
+            'interviewer.gender': 'required',
+            'interviewer.position': {
+                required: true,
+                minlength: 2
+            },
+            'interviewer.voice': {
+                required: true,
+                differentVoice: true
+            }
+        },
+        // Thông báo lỗi tùy chỉnh
+        messages: {
+            // Thông tin ứng viên
+            'candidate.name': {
+                required: 'Vui lòng nhập tên ứng viên',
+                minlength: 'Tên phải có ít nhất {0} ký tự'
+            },
+            'candidate.email': {
+                required: 'Vui lòng nhập email',
+                email: 'Vui lòng nhập email hợp lệ'
+            },
+            'candidate.phone': {
+                required: 'Vui lòng nhập số điện thoại',
+                pattern: 'Số điện thoại phải có 10-11 chữ số'
+            },
+            'candidate.level': 'Vui lòng chọn level ứng viên',
+            'candidate.experienceYears': {
+                required: 'Vui lòng chọn số năm kinh nghiệm',
+                min: 'Số năm kinh nghiệm không được âm'
+            },
+            'candidate.gender': 'Vui lòng chọn giới tính ứng viên',
+            'candidate.voice': {
+                required: 'Vui lòng chọn giọng đọc cho ứng viên',
+                differentVoice: 'Giọng đọc không được trùng với người phỏng vấn'
+            },
+            // Thông tin vị trí
+            'position.title': 'Vui lòng chọn vị trí tuyển dụng',
+            'position.level': 'Vui lòng chọn level vị trí',
+            'position.experienceYears': {
+                required: 'Vui lòng chọn số năm kinh nghiệm yêu cầu',
+                min: 'Số năm kinh nghiệm không được âm'
+            },
+            'position.requiredExperience': {
+                required: 'Vui lòng nhập yêu cầu kinh nghiệm',
+                minlength: 'Yêu cầu kinh nghiệm phải có ít nhất {0} ký tự'
+            },
+            // Thông tin người phỏng vấn
+            'interviewer.name': {
+                required: 'Vui lòng nhập tên người phỏng vấn',
+                minlength: 'Tên phải có ít nhất {0} ký tự'
+            },
+            'interviewer.gender': 'Vui lòng chọn giới tính người phỏng vấn',
+            'interviewer.position': {
+                required: 'Vui lòng nhập chức vụ người phỏng vấn',
+                minlength: 'Chức vụ phải có ít nhất {0} ký tự'
+            },
+            'interviewer.voice': {
+                required: 'Vui lòng chọn giọng đọc cho người phỏng vấn',
+                differentVoice: 'Giọng đọc không được trùng với ứng viên'
+            }
+        },
+        // Xử lý khi form hợp lệ
+        submitHandler: function(form) {
         const formData = {
             candidate: {},
             position: {},
@@ -205,9 +300,12 @@ $(document).ready(function() {
             formData.interviewer[name] = $(this).val();
         });
 
-        console.log('Form data:', formData);
+            // Hiển thị overlay và progress
+            overlay.show();
+            progressContainer.show();
+            progressList.empty();
 
-        // Kết nối SSE
+            // Kết nối SSE và gửi request
         const eventSource = new EventSource('/api/interviews/progress');
 
         eventSource.onmessage = function(event) {
@@ -267,7 +365,18 @@ $(document).ready(function() {
                 alert('Có lỗi xảy ra: ' + xhr.responseJSON?.error || 'Lỗi không xác định');
             }
         });
+
+            return false; // Ngăn form submit theo cách thông thường
+        }
     });
+
+    // Thêm custom validation method cho giọng đọc
+    $.validator.addMethod('differentVoice', function(value, element) {
+        const otherVoice = element.name.includes('candidate') ?
+            $('#interviewerVoice').val() :
+            $('#candidateVoice').val();
+        return !value || !otherVoice || value !== otherVoice;
+    }, 'Giọng đọc không được trùng nhau');
 
     // Xử lý sự kiện filter
     $('#candidateNameFilter, #candidatePhoneFilter, #interviewerNameFilter').on('input', function() {
@@ -549,6 +658,8 @@ function showContent(content, title, interview, type) {
                 .markdown-content {
                     font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
                     line-height: 1.6;
+                    padding: 20px;
+                    background-color: white;
                 }
                 .markdown-content h1 { font-size: 2em; margin-bottom: 0.5em; }
                 .markdown-content h2 { font-size: 1.5em; margin-bottom: 0.5em; }
@@ -581,37 +692,72 @@ function showContent(content, title, interview, type) {
     // Cập nhật tiêu đề modal
     modalTitle.text(title);
 
-    // Chuyển đổi markdown sang HTML và hiển thị trong modal
-    modalBody.empty().append(
-        $('<div>')
+    // Tạo container cho nội dung
+    const contentContainer = $('<div>')
             .addClass('markdown-content')
-            .html(marked.parse(content))
-    );
+        .attr('id', 'pdfContent')
+        .html(marked.parse(content));
+
+    // Thêm vào modal body
+    modalBody.empty().append(contentContainer);
 
     // Cập nhật nút download
     const downloadBtn = contentModal.find('.download-btn')
         .removeClass('d-none')
         .off('click')
-        .click(() => downloadPDF(interview.id, type, interview));
+        .click(() => downloadPDF(type, title));
 
     const modal = new bootstrap.Modal(contentModal);
     modal.show();
 }
 
-function downloadPDF(interviewId, type, interview) {
-    // Lấy đường dẫn file PDF từ interview object
-    const filePath = type === 'cv' ? interview.cvPath : interview.jdPath;
-    if (!filePath) {
-        alert('Không tìm thấy file PDF');
-        return;
-    }
+function downloadPDF(type, title) {
+    const element = document.getElementById('pdfContent');
 
-    // Tạo URL để tải file
-    const url = filePath;
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = type === 'cv' ? 'cv.pdf' : 'jd.pdf';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    // Hiển thị loading
+    showLoading();
+
+    // Tạo PDF từ nội dung HTML
+    html2canvas(element, {
+        scale: 2, // Tăng độ phân giải
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff' // Đảm bảo nền trắng
+    }).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+
+        // Khởi tạo jsPDF
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        // Tính toán kích thước để fit vào trang A4
+        const imgWidth = 210; // A4 width in mm
+        const pageHeight = 295; // A4 height in mm
+        const imgHeight = canvas.height * imgWidth / canvas.width;
+
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        // Thêm trang đầu tiên
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        // Thêm các trang tiếp theo nếu cần
+        while (heightLeft >= 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+        }
+
+        // Tải xuống PDF
+        pdf.save(`${type === 'cv' ? 'CV' : 'JD'}_${title.replace(/[^a-z0-9]/gi, '_')}.pdf`);
+
+        // Ẩn loading
+        hideLoading();
+    }).catch(error => {
+        console.error('Lỗi khi tạo PDF:', error);
+        alert('Có lỗi xảy ra khi tạo PDF. Vui lòng thử lại.');
+        hideLoading();
+    });
 }
