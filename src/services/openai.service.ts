@@ -60,12 +60,14 @@ Hãy viết một cách chuyên nghiệp, rõ ràng và hấp dẫn.`;
 
   public async generateCV(candidate: Interview['candidate']): Promise<string> {
     const prompt = `Hãy tạo một CV chuyên nghiệp cho ứng viên ${candidate.name} với thông tin sau:
+- Email: ${candidate.email}
+- Số điện thoại: ${candidate.phone}
 - Cấp độ: ${candidate.level}
 - Số năm kinh nghiệm: ${candidate.experienceYears}
 - Giới tính: ${candidate.gender}
 
 CV cần bao gồm các phần:
-1. Thông tin cá nhân
+1. Thông tin cá nhân (bao gồm email và số điện thoại)
 2. Mục tiêu nghề nghiệp
 3. Kinh nghiệm làm việc (liệt kê ít nhất 3 công ty)
 4. Kỹ năng chuyên môn
@@ -329,6 +331,31 @@ Trả về kết quả dưới dạng JSON với định dạng:
           console.error(`Error deleting temporary file ${file.path}:`, e);
         }
       });
+      throw error;
+    }
+  }
+
+  public async generateText(prompt: string): Promise<string> {
+    try {
+      const completion = await this.openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'system',
+            content: 'Bạn là một chuyên gia tuyển dụng. Hãy tạo các yêu cầu kinh nghiệm ngắn gọn, mỗi yêu cầu là một gạch đầu dòng. Sử dụng ngôn ngữ tiếng Việt.'
+          },
+          {
+            role: 'user',
+            content: prompt
+          }
+        ],
+        temperature: 0.7,
+        max_tokens: 1000
+      });
+
+      return completion.choices[0].message.content || '';
+    } catch (error) {
+      console.error('Error generating text:', error);
       throw error;
     }
   }

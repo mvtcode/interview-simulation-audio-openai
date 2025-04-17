@@ -1,11 +1,10 @@
-import { Interview, DialogueLine } from '../models/interview.model';
+import { Interview } from '../models/interview.model';
 import { OpenAIService } from './openai.service';
 import { FFmpegService } from './ffmpeg.service';
 import { DatabaseService } from './database.service';
 import { PDFService } from './pdf.service';
-import { join } from 'path';
 import { EventEmitter } from 'events';
-import { ConversationLine } from './openai.service';
+import { join } from 'path';
 
 export const interviewEventEmitter = new EventEmitter();
 
@@ -30,10 +29,6 @@ export class InterviewService {
     this.ffmpegService = new FFmpegService();
     this.databaseService = new DatabaseService();
     this.pdfService = new PDFService();
-  }
-
-  private convertToDialogueLines(conversation: ConversationLine[]): DialogueLine[] {
-    return conversation;
   }
 
   public async createInterview(data: Partial<Interview>): Promise<Interview> {
@@ -282,6 +277,29 @@ export class InterviewService {
     } catch (error) {
       console.error('Error getting interviews with filters:', error);
       throw new Error('Failed to get interviews with filters');
+    }
+  }
+
+  public async generateRequiredExperience(position: {
+    title: string;
+    requiredLevel: string;
+    requiredExperienceYears: number;
+  }): Promise<string> {
+    try {
+      const prompt = `Tạo yêu cầu kinh nghiệm cho vị trí ${position.title} với level ${position.requiredLevel} và yêu cầu ${position.requiredExperienceYears} năm kinh nghiệm.
+      Mỗi yêu cầu phải ngắn gọn, rõ ràng và bắt đầu bằng dấu gạch đầu dòng.
+      Các yêu cầu phải bao gồm:
+      - Kỹ năng chuyên môn cần thiết
+      - Kiến thức về công nghệ/tools
+      - Kinh nghiệm thực tế
+      - Khả năng làm việc nhóm và giao tiếp
+      - Khả năng giải quyết vấn đề`;
+
+      const result = await this.openaiService.generateText(prompt);
+      return result;
+    } catch (error) {
+      console.error('Error generating required experience:', error);
+      throw error;
     }
   }
 }

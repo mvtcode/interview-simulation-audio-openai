@@ -7,6 +7,9 @@ const interviewController = new InterviewController();
 // Get progress updates (phải đặt trước các route có param)
 router.get('/progress', interviewController.subscribeToProgress);
 
+// Generate required experience
+router.post('/generate-required-experience', interviewController.generateRequiredExperience);
+
 // Create new interview
 router.post('/', interviewController.createInterview);
 

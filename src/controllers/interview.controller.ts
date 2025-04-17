@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { InterviewService, interviewEventEmitter } from '../services/interview.service';
-import { Interview } from '../models/interview.model';
 
 export class InterviewController {
   private interviewService: InterviewService;
@@ -40,7 +39,7 @@ export class InterviewController {
     }
   };
 
-  public subscribeToProgress = (req: Request, res: Response): void => {
+  public subscribeToProgress = (_req: Request, res: Response): void => {
     res.writeHead(200, {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
@@ -56,7 +55,7 @@ export class InterviewController {
     this.clients.add(res);
 
     // Xử lý khi client ngắt kết nối
-    req.on('close', () => {
+    _req.on('close', () => {
       clearInterval(heartbeat);
       this.clients.delete(res);
     });
@@ -137,6 +136,28 @@ export class InterviewController {
     } catch (error) {
       console.error('Error generating JD PDF:', error);
       res.status(500).json({ error: 'Failed to generate JD PDF' });
+    }
+  };
+
+  public generateRequiredExperience = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { positionTitle, positionLevel, positionExperience } = req.body;
+
+      if (!positionTitle || !positionLevel || !positionExperience) {
+        res.status(400).json({ error: 'Missing required fields: positionTitle, positionLevel, or positionExperience' });
+        return;
+      }
+
+      const result = await this.interviewService.generateRequiredExperience({
+        title: positionTitle,
+        requiredLevel: positionLevel,
+        requiredExperienceYears: positionExperience
+      });
+
+      res.json({ requiredExperience: result });
+    } catch (error) {
+      console.error('Error generating required experience:', error);
+      res.status(500).json({ error: error instanceof Error ? error.message : 'Failed to generate required experience' });
     }
   };
 }
